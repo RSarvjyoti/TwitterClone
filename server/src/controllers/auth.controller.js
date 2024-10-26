@@ -1,6 +1,7 @@
 import { generateTokenAndSetCookie } from "../lib/ustils/generateToken.js";
-import { userModel } from "../models/user.model.js";
+
 import bcrypt from "bcryptjs";
+import { User } from "../models/user.model.js";
 
 export const signup = async (req, res) => {
   try {
@@ -13,14 +14,14 @@ export const signup = async (req, res) => {
     }
 
     // check username is exit or not
-    const exitingUser = await userModel.findOne({ username });
+    const exitingUser = await User.findOne({ username });
 
     if (exitingUser) {
       return res.status(400).json({ error: "User is already taken" });
     }
 
     // check email is exit or not
-    const exitingEmail = await userModel.findOne({ email });
+    const exitingEmail = await User.findOne({ email });
 
     if (exitingEmail) {
       return res.status(400).json({ error: "Email is already taken" });
@@ -35,7 +36,7 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new userModel({
+    const newUser = new User({
       username,
       fullName,
       email,
@@ -69,7 +70,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await userModel.findOne({ username });
+    const user = await User.findOne({ username });
     const isPasswordCorrect = await bcrypt.compare(
       password,
       user?.password || ""
@@ -111,7 +112,7 @@ export const logout = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try{
-    const user = await userModel.findById(req.user._id).select("-password");
+    const user = await User.findById(req.user._id).select("-password");
     res.status(200).json(user);
   }catch(error) {
     console.log("Error in get me controller", error.message);

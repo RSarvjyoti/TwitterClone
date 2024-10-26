@@ -3,6 +3,7 @@ import authRouter from "./routes/auth.routes.js";
 import {config} from 'dotenv';
 import { connectDb } from "./config/db.js";
 import cookieParser from 'cookie-parser'
+import userRouter from "./routes/user.router.js";
 
 config();
 const PORT = process.env.PORT || 9090
@@ -14,6 +15,7 @@ app.use(express.urlencoded({extended : true}))
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 
 app.listen(PORT, async() => {
   await connectDb(MONGO_URL);
