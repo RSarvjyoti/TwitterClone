@@ -1,11 +1,12 @@
 import express from "express";
-import authRouter from "./routes/auth.routes.js";
+import authRouter from "./routes/auth.route.js";
 import {config} from 'dotenv';
 import { connectDb } from "./config/db.js";
 import cookieParser from 'cookie-parser'
 import userRouter from "./routes/user.router.js";
 import { v2 as cloudinary } from 'cloudinary';
-import postRoute from './routes/post.route.js'
+import postRoute from './routes/post.route.js';
+import notiicationRoute from './routes/notification.route.js'
 
 config();
 
@@ -23,9 +24,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended : true}))
 app.use(cookieParser());
 
+// all routers
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-app.use("/api/posts", postRoute)
+app.use("/api/posts", postRoute);
+app.use('/api/notification', notiicationRoute)
 
 app.listen(PORT, async() => {
   await connectDb(MONGO_URL);
